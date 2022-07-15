@@ -1,6 +1,6 @@
 ---
 NEP: XXXX
-Title: Adding extra hashing functions and trie data structure require for IBC compatibility
+Title: Adding extra hashing functions and trie data structure required for IBC compatibility
 Author: Blas Rodriguez Irizar <rodrigblas@gmail.com>
 DiscussionsTo: https://github.com/nearprotocol/neps/pull/0000
 Status: Draft
@@ -18,14 +18,28 @@ efficiently retrieve data from the storage.
 
 ## Motivation
 
-Why are we doing this? What use cases does it support? What is the expected outcome?
-Trustless bridges
+Trustless bridges require a protocol to adequately sync states between different chains.
+The Cosmos ecosystem has been using [IBC](https://github.com/cosmos/ibc)
+(inter-blockchain communication protocol) successfully for some time. Projects aiming to
+interoperate with NEAR building trustless bridges using a standard protocol
+might opt for IBC.
+
+This NEP introduces the changes that - combined with NEP-364 - are missing to provide developers
+with the tools to use IBC on NEAR.
 
 ## Rationale and alternatives
 
-- Why is this design the best in the space of possible designs?
-- What other designs have been considered and what is the rationale for not choosing them?
-- What is the impact of not doing this?
+There are trade-offs between running code that is compiled natively and exposed through a host function or
+having the smart contract developer compile it using wasm. Host functions provide users with faster primitives,
+while they introduce both breaking changes into the protocol and potential risks for vulnerabilities in the system.
+Wasm-compiled code on the other hand is safer, given that's isolated into the smart contract runtime, at the cost
+of throughput and or latency.
+
+This NEP introduces very CPU-intensive operations (such as hashing) that shine when running on native code.
+And introducing these functions as native functions will allow developers using IBC on NEAR to process
+more packages in one transaction at a lower gas cost.
+
+The impact of not doing this change is either making some interoperability unfeasible or unnecessarily expensive.
 
 ## Specification
 
