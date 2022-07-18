@@ -79,6 +79,8 @@ The impact of not doing this change is either making some interoperability unfea
     ///
     /// `base + write_register_base + write_register_byte * num_bytes + blake2_256_base + blake2_256_byte * num_bytes`
     pub fn blake2_256(&mut self, value_len: u64, value_ptr: u64, register_id: u64) -> Result<()>
+
+    // TODO: what about trie + state management? (discuss w/ SEUN)
 ```
 
 3 hashing functions are included: `{sha512, sha3_512, blake2_256}`.
