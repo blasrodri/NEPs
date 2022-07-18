@@ -43,59 +43,56 @@ The impact of not doing this change is either making some interoperability unfea
 
 ## Specification
 
-Explain the proposal as if it was already implemented and you were teaching it to another developer. That generally means:
+```rust
+    /// Hashes the given value using sha512 algorithm and returns it into `register_id`.
+    ///
+    /// # Errors
+    ///
+    /// If `value_len + value_ptr` points outside the memory or the registers use more memory than
+    /// the limit with `MemoryAccessViolation`.
+    ///
+    /// # Cost
+    ///
+    /// `base + write_register_base + write_register_byte * num_bytes + sha512_base + sha512_byte * num_bytes`
+    pub fn sha512(&mut self, value_len: u64, value_ptr: u64, register_id: u64) -> Result<()>;
 
-- Introducing new named concepts.
-- Explaining the feature largely in terms of examples.
-- If feature introduces new abstractions, explaining how users and/or developers should _think_ about it;
-- If applicable, describe the differences between the existing functionality.
+    /// Hashes the given value using sha3 512 algorithm and returns it into `register_id`.
+    ///
+    /// # Errors
+    ///
+    /// If `value_len + value_ptr` points outside the memory or the registers use more memory than
+    /// the limit with `MemoryAccessViolation`.
+    ///
+    /// # Cost
+    ///
+    /// `base + write_register_base + write_register_byte * num_bytes + sha3512_base + sha3512_byte * num_bytes`
+    pub fn sha3_512(&mut self, value_len: u64, value_ptr: u64, register_id: u64) -> Result<()>;
 
-For user-facing NEPs this section should focus on user stories.
+    /// Hashes the given value using blake2 256 algorithm and returns it into `register_id`.
+    ///
+    /// # Errors
+    ///
+    /// If `value_len + value_ptr` points outside the memory or the registers use more memory than
+    /// the limit with `MemoryAccessViolation`.
+    ///
+    /// # Cost
+    ///
+    /// `base + write_register_base + write_register_byte * num_bytes + blake2_256_base + blake2_256_byte * num_bytes`
+    pub fn blake2_256(&mut self, value_len: u64, value_ptr: u64, register_id: u64) -> Result<()>
+```
 
-## Reference Implementation (Required for Contract category, optional for other categories)
-
-This is the technical portion of the NEP. Explain the design in sufficient detail that:
-
-- Its interaction with other features is clear.
-- Where possible, include a `Minimum Viable Interface` subsection expressing the required behavior and types in a target Near Contract language. (ie. traits and structs for rust, interfaces and classes for javascript, function signatures and structs for c, etc.)
-- It is reasonably clear how the feature would be implemented.
-- Corner cases are dissected by example.
-
-The section should return to the examples given in the previous section, and explain more fully how the detailed proposal makes those examples work.
-
-## Security Implications (Optional)
-
-If there are security concerns in relation to the NEP, those concerns should be explicitly written out to make sure reviewers of the NEP are aware of them.
-
-## Drawbacks (Optional)
-
-Why should we _not_ do this?
-
-## Unresolved Issues (Optional)
-
-- What parts of the design do you expect to resolve through the NEP process before this gets merged?
-- What parts of the design do you expect to resolve through the implementation of this feature before stabilization?
-- What related issues do you consider out of scope for this NEP that could be addressed in the future independently of the solution that comes out of this NEP?
+3 hashing functions are included: `{sha512, sha3_512, blake2_256}`.
+TODO: understand the specific use cases of each (ask seun)
 
 ## Future possibilities
 
-Think about what the natural extension and evolution of your proposal would
-be and how it would affect the project as a whole in a holistic
-way. Try to use this section as a tool to more fully consider all possible
-interactions with the project in your proposal.
-Also consider how the this all fits into the roadmap for the project
-and of the relevant sub-team.
+The need behind introducing these precompiled functions is driven by performance which
+ultimately translates into less gas cost. Having a more generic tool, such as a better
+compiler or even something like EBPF (used in Solana) could be an alternative to provide developers
+with a sandboxed environment that's more performant than current WASM-compiled code.
 
-This is also a good place to "dump ideas", if they are out of scope for the
-NEP you are writing but otherwise related.
-
-If you have tried and cannot think of any future possibilities,
-you may simply state that you cannot think of anything.
-
-Note that having something written down in the future-possibilities section
-is not a reason to accept the current or a future NEP. Such notes should be
-in the section on motivation or rationale in this or subsequent NEPs.
-The section merely provides additional information.
+This is clearly a much bigger change, but one that can potentially save NEAR from having to
+introduce a large amounts of functions in the future.
 
 ## Copyright
 
