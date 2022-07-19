@@ -93,8 +93,8 @@ ultimately translates into less gas cost. Having a more generic tool, such as a 
 compiler or even something like EBPF (used in Solana) could be an alternative to provide developers
 with a sandboxed environment that's more performant than current WASM-compiled code.
 
-This is clearly a much bigger change, but one that can potentially save NEAR from having to
-introduce a large amounts of functions in the future.
+The aforementioned feature is a substantial change, but one that can potentially save NEAR
+from having to introduce large amounts of functions in the future.
 
 ## Copyright
 
