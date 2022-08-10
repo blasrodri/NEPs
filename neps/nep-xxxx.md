@@ -1,6 +1,6 @@
 ---
 NEP: XXXX
-Title: Adding extra hashing functions and trie data structure required for IBC compatibility
+Title: Adding extra hashing functions required for IBC compatibility
 Author: Blas Rodriguez Irizar <rodrigblas@gmail.com>
 DiscussionsTo: https://github.com/nearprotocol/neps/pull/0000
 Status: Draft
@@ -12,8 +12,8 @@ Created: 15-Jul-2022
 ## Summary
 
 Following NEP-364 additional elements are introduced to make NEAR IBC compatible.
-In particular, this NEP introduces a set of missing hashing functions and an interface to
-efficiently retrieve data from the storage.
+In particular, this NEP introduces a set of missing hashing functions that are critical
+for bridging NEAR with different chains using IBC.
 // TODO: improve this paragraph once the proposal is fleshed out
 
 ## Motivation
@@ -80,11 +80,10 @@ The impact of not doing this change is either making some interoperability unfea
     /// `base + write_register_base + write_register_byte * num_bytes + blake2_256_base + blake2_256_byte * num_bytes`
     pub fn blake2_256(&mut self, value_len: u64, value_ptr: u64, register_id: u64) -> Result<()>
 
-    // TODO: what about trie + state management? (discuss w/ SEUN)
 ```
 
-3 hashing functions are included: `{sha512, sha3_512, blake2_256}`.
-TODO: understand the specific use cases of each (ask seun)
+3 hashing functions are included: `{sha512, sha3_512, blake2_256}` which will be implemented
+as part of the `HostFunctions` trait on the [ibc-rs](https://github.com/ComposableFi/ibc-rs/blob/master/modules/src/clients/host_functions.rs#L45-L57) repository.
 
 ## Future possibilities
 
