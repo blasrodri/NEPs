@@ -44,7 +44,19 @@ The impact of not doing this change is either making some interoperability unfea
 ## Specification
 
 ```rust
-    /// Hashes the given value using sha512 algorithm and returns it into `register_id`.
+    /// Hashes the given value using sha2 256 algorithm and returns it into `register_id`.
+    ///
+    /// # Errors
+    ///
+    /// If `value_len + value_ptr` points outside the memory or the registers use more memory than
+    /// the limit with `MemoryAccessViolation`.
+    ///
+    /// # Cost
+    ///
+    /// `base + write_register_base + write_register_byte * num_bytes + sha2_256_base + sha2_256_byte * num_bytes`
+    pub fn sha2_256(&mut self, value_len: u64, value_ptr: u64, register_id: u64) -> Result<()>;
+
+    /// Hashes the given value using sha2 512 algorithm and returns it into `register_id`.
     ///
     /// # Errors
     ///
@@ -54,7 +66,7 @@ The impact of not doing this change is either making some interoperability unfea
     /// # Cost
     ///
     /// `base + write_register_base + write_register_byte * num_bytes + sha512_base + sha512_byte * num_bytes`
-    pub fn sha512(&mut self, value_len: u64, value_ptr: u64, register_id: u64) -> Result<()>;
+    pub fn sha2_512(&mut self, value_len: u64, value_ptr: u64, register_id: u64) -> Result<()>;
 
     /// Hashes the given value using sha3 512 algorithm and returns it into `register_id`.
     ///
@@ -82,8 +94,14 @@ The impact of not doing this change is either making some interoperability unfea
 
 ```
 
-3 hashing functions are included: `{sha512, sha3_512, blake2_256}` which will be implemented
-as part of the `HostFunctions` trait on the [ibc-rs](https://github.com/ComposableFi/ibc-rs/blob/master/modules/src/clients/host_functions.rs#L45-L57) repository.
+4 hashing functions are included: `{sha2_256, sha2_512, sha3_512, blake2_256}` which will be implemented
+as part of the `HostFunctions` trait on the [ibc-rs](https://github.com/ComposableFi/ibc-rs/blob/master/modules/src/clients/host_functions.
+rs#L45-L57) repository. And `blake2_256` is needed for the
+[following methods](https://github.com/ComposableFi/ibc-rs/blob/master/modules/src/clients/host_functions.rs#L21-L37).
+
+- For `sha2_256` and `sha2_512` we propose to use [sha2](https://github.com/rustcrypto/hashes/tree/HEAD/sha2)
+- For `sha3_512` we propose using [sha3](https://github.com/rustcrypto/hashes/tree/HEAD/sha3)
+- For `blake2_256` we propose using [blake2](https://github.com/rustcrypto/hashes/tree/HEAD/blake2)
 
 ## Future possibilities
 
